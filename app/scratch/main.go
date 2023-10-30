@@ -29,7 +29,7 @@ func run() error {
 	}
 
 	tx := Tx{
-		FromID: "Bill",
+		FromID: "0xF01813E4B85e178A83e29B8E7bF26BD830a25f32",
 		ToID:   "Aaron",
 		Value:  1000,
 	}
@@ -46,9 +46,57 @@ func run() error {
 		return fmt.Errorf("unable to sign: %w", err)
 	}
 
-	fmt.Println(hexutil.Encode(sig))
+	fmt.Println("SIG:", hexutil.Encode(sig))
+
+	// ===============================================================
+	// OVER THE WIRE
 
 	publicKey, err := crypto.SigToPub(v, sig)
+	if err != nil {
+		return fmt.Errorf("unable to dervice public key: %w", err)
+	}
+
+	fmt.Println("PUB:", crypto.PubkeyToAddress(*publicKey).String())
+
+	// ===============================================================
+
+	tx = Tx{
+		FromID: "0xF01813E4B85e178A83e29B8E7bF26BD830a25f32",
+		ToID:   "Frank",
+		Value:  250,
+	}
+
+	data, err = json.Marshal(tx)
+	if err != nil {
+		return fmt.Errorf("unable to marshal: %w", err)
+	}
+
+	v2 := crypto.Keccak256(data)
+
+	sig2, err := crypto.Sign(v2, privateKey)
+	if err != nil {
+		return fmt.Errorf("unable to sign: %w", err)
+	}
+
+	fmt.Println("SIG:", hexutil.Encode(sig2))
+	fmt.Println("PUB:", crypto.PubkeyToAddress(*publicKey).String())
+	// ===============================================================
+	// OVER THE WIRE
+
+	tx2 := Tx{
+		FromID: "0xF01813E4B85e178A83e29B8E7bF26BD830a25f32",
+		ToID:   "Frank",
+		Value:  250,
+	}
+
+	data, err = json.Marshal(tx2)
+	if err != nil {
+		return fmt.Errorf("unable to marshal: %w", err)
+	}
+
+	v2 = crypto.Keccak256(data)
+
+	publicKey, err = crypto.SigToPub(v2, sig2)
 	if err != nil {
 		return fmt.Errorf("unable to dervice public key: %w", err)
 	}
