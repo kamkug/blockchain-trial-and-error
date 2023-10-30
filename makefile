@@ -26,6 +26,9 @@ SHELL := /bin/bash
 # ==============================================================================
 # Local support
 
+run:
+	go run app/scratch/main.go
+
 up:
 	go run app/services/node/main.go -race | go run app/tooling/logfmt/main.go
 
