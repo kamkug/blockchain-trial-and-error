@@ -17,7 +17,9 @@ SHELL := /bin/bash
 # go run app/wallet/cli/main.go generate
 #
 # Sample calls
+# public site
 # curl -il -X GET http://localhost:8080/v1/sample
+# private site
 # curl -il -X GET http://localhost:9080/v1/node/sample
 #
 

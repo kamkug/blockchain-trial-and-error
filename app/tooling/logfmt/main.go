@@ -72,7 +72,7 @@ func main() {
 			b.WriteString(fmt.Sprintf("%s[%v]: ", k, v))
 		}
 
-		// Write the new log format, removing the last :
+		// Write the new log format, removing the last ':'
 		out := b.String()
 		fmt.Println(out[:len(out)-2])
 	}
