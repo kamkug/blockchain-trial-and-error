@@ -99,12 +99,19 @@ func run() error {
 	stamp = []byte(fmt.Sprintf("\x19Ardan Signed Message:\n%d", len(data)))
 	v2 = crypto.Keccak256(stamp, data)
 
+	fmt.Println(v2)
+
 	publicKey, err = crypto.SigToPub(v2, sig2)
 	if err != nil {
 		return fmt.Errorf("unable to dervice public key: %w", err)
 	}
 
 	fmt.Println("PUB:", crypto.PubkeyToAddress(*publicKey).String())
+
+	s := "4c2c74d96439cc2fea1e05f83e07e0ab68f9e12671b9805b0c0a8366ebcd298f60f556a7f25e04630e73d40775cbea81ae4e99e17f29a10a9fa35d735fe5438d00"
+	s = s[:128]
+	s += "27"
+	fmt.Printf("S value: %v\nR value: %v\nV value: %v\n", s[:64], s[64:128], s[128:])
 
 	return nil
 
