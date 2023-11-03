@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/big"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -108,11 +110,27 @@ func run() error {
 
 	fmt.Println("PUB:", crypto.PubkeyToAddress(*publicKey).String())
 
-	s := "4c2c74d96439cc2fea1e05f83e07e0ab68f9e12671b9805b0c0a8366ebcd298f60f556a7f25e04630e73d40775cbea81ae4e99e17f29a10a9fa35d735fe5438d00"
-	s = s[:128]
-	s += "27"
-	fmt.Printf("S value: %v\nR value: %v\nV value: %v\n", s[:64], s[64:128], s[128:])
+	vv, r, s, err := ToVRSFromHexSignature(hexutil.Encode(sig2))
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("V|R|S", vv, r, s)
 
 	return nil
 
+}
+
+// ToVRSFromHexSignature converts a hex representation of the signature into
+// its R, S and V parts.
+func ToVRSFromHexSignature(sigStr string) (v, r, s *big.Int, err error) {
+	sig, err := hex.DecodeString(sigStr[2:])
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	r = big.NewInt(0).SetBytes(sig[:32])
+	s = big.NewInt(0).SetBytes(sig[32:64])
+	v = big.NewInt(0).SetBytes([]byte{sig[64]})
+
+	return v, r, s, nil
 }
